@@ -24,15 +24,23 @@ You should at least,
 - use docker to containerise your solution
 - test & document
 
-It would be nice to have.
+It would be nice to have,
 
 - a diagram demonstrating your solution
 
 
-## Evaluatioon
+## Evaluation
 
 You will evaluated based on
 
 - clarity of thinking
 - dev skills
 - ML knowledge
+
+## Instruction
+
+Fork this repository and start making commits/branches.
+
+You should spend 4-6 hours max on this task. Though you could spend more, it is not encouraged.
+
+Anything unclear, please feel free to contact us.
