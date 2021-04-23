@@ -7,7 +7,7 @@ You are given a production model `mnist_model` in tensorflow `SavedModel` format
 solution that serves the model in our production pipeline.
 
 Please note that the incoming requests are images of different shapes. Your server should return a prediction result
-with an indicative score that shows how uncertain/certain the model is.
+with an indicative score that shows how uncertain/certain the model is. Note that this is different from the raw score returned by the model - we would like to know whether the model views the raw score it has returned as being reliable or not. There are a few ways you could do this, each with different impacts on the performance of the system you are building.
 
 Factors to consider might include,
 
