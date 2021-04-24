@@ -17,7 +17,7 @@ jobs:
       - name: Check formatting
         run: poetry run black --line-length 120 --check .
       - name: Code Quality
-        run: poetry run pylint --rcfile .pylintrc clover tests
+        run: poetry run pylint --rcfile .pylintrc ai_auto_challenge tests
       - name: Run tests and generate coverage report
         run: poetry run pytest -s --junitxml=./test-report.xml --cov=./ --cov-report=xml .
       - uses: actions/upload-artifact@v1
