@@ -90,7 +90,7 @@ disable=
 # Warning msgs that should eventually be enabled:
     arguments-differ, global-statement, fixme, broad-except,
 # False positives
-    unsubscriptable-object, not-an-iterable
+    unsubscriptable-object, not-an-iterable, duplicate-code
 
 [REPORTS]
 
