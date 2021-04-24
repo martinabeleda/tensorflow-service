@@ -16,8 +16,16 @@ Install dependencies:
 poetry install
 ```
 
-To run a local development instance with `docker-compose`:
+Build the container if it doesn't exist or you've updated any dependencies:
 
 ```bash
-docker-compose up --build
+docker compose build
 ```
+
+To run a local development instance with `docker compose`:
+
+```bash
+docker compose up
+```
+
+The service is now available at http://localhost:8080
