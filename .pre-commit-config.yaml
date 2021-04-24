@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+  - repo: local
+    hooks:
+      - id: black
+        name: Checking Formatting
+        entry: poetry run black --line-length 120 --check
+        language: system
+        types: [python]
+  - repo: local
+    hooks:
+      - id: pylint
+        name: Code Quality
+        entry: poetry run pylint --rcfile .pylintrc clover
+        language: system
+        types: [python]
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Running Tests
+        entry: poetry run pytest .
+        language: system
+        types: [python]
