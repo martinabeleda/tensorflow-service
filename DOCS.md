@@ -44,3 +44,16 @@ Fork this repository and start making commits/branches.
 You should spend 4-6 hours max on this task. Though you could spend more, it is not encouraged.
 
 Anything unclear, please feel free to contact us.
+
+
+## Design Decisions
+
+- Within the codebase, I use the terminology of `predictor` to refer to a ML model so as not to overload the use of the
+term `model` which refers to data models in `pydantic`.
+- The service has been designed to accept multi scale / channel / format images and will transform it to match the
+deployed model requirements. Deployed models can operate either on grayscale or RGB images.
+
+## Future work
+
+See the project [issues](https://github.com/martinabeleda/ai-auto-challenge/issues) for a description of any future
+enhancements.

@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.main import app
+from app.predictor import Predictor
 
 
 @pytest.fixture
@@ -16,3 +17,9 @@ def test_predict(file: str, data_dir: Path, client: TestClient):
     with (data_dir / file).open("rb") as f:
         response = client.post("/v1/predict", files={"file": f})
     assert response.status_code == 200
+
+
+def test_get_predictor(client: TestClient):
+    response = client.get("/v1/predictor")
+    assert response.status_code == 200
+    assert response.json()["name"] == Predictor.mnist_model.value
