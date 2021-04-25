@@ -1,5 +1,7 @@
 # AI Automation Engineer Challenge
 
+A service for serving model predictions. See the [documentation](./DOCS.md) for a discussion on any design decisions.
+
 ## Development
 
 See the [official documentation](https://python-poetry.org/docs/#installation) for installing poetry.

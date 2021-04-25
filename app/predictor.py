@@ -15,6 +15,7 @@ class Predictor(str, Enum):
 
     mnist_model = "mnist_model"
     mnist_cnn = "mnist_cnn"
+    mnist_dropout = "mnist_dropout"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -29,7 +30,7 @@ class PredictionFunctor:
     def __call__(self, file: IO) -> np.ndarray:
         image = self._load_image_as_array(file)
         image = np.expand_dims(image, axis=0)
-        return self.model.predict(image)
+        return self._predict_with_uncertainty(image)
 
     @property
     def image_shape(self) -> Union[Tuple[int, int], Tuple[int, int, int]]:
@@ -38,6 +39,15 @@ class PredictionFunctor:
     @property
     def image_context(self) -> Tuple[int, int]:
         return self.image_shape if len(self.image_shape) == 2 else self.image_shape[:2]
+
+    def _predict_with_uncertainty(self, image: np.ndarray, samples: int = 20) -> Tuple[np.ndarray, np.ndarray]:
+        result = []
+        for _ in range(samples):
+            result.append(self.model.predict(image))
+        result = np.array(result)
+        prediction = result.mean(axis=0)
+        uncertainty = result.var(axis=0)
+        return prediction[0], uncertainty[0]
 
     def _load_image_as_array(self, file: IO) -> np.ndarray:
         """Loads an image from file and applies pre-processing steps to conform to the model input
