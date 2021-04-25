@@ -45,8 +45,10 @@ You should spend 4-6 hours max on this task. Though you could spend more, it is 
 
 Anything unclear, please feel free to contact us.
 
-
 ## Design Decisions
+
+This section describes the solution and outlines any design decisions. While not all of the solution is optimal,
+the trade-offs have been described where possible.
 
 ### Nomenclature
 
@@ -66,10 +68,44 @@ that the softmax output is a probability). The paper [Dropout as a Bayesian Appr
 
 This paper describes a solution where we can run our model multiple times over the same input while applying dropout
 to approximate a Bayesian approach. The trade-off with this approach is that we must run many forward passes over the
-same input to produce a single prediction. Bayesian models are a
+same input to produce a single prediction.
 
-Another populate approach is to use a Variational Auto-Encoder (VAE) to model the training dataset distribution and
+Another popular approach is to use a Variational Auto-Encoder (VAE) to model the training dataset distribution and
 measure uncertainty as the ability to effectively re-generate unseen data.
+
+In general, I think I could do more research into generating an uncertainty measure, the current approach
+(running multiple samples with dropout) requires some assumptions to be encoded into the architecture at training time
+and also impacts serving performance quite heavily.
+
+### Load test
+
+The load test was run locally on my machine with 12 cores and 32G memory. These are the results of the load test with
+50 users. It is worth noting that the current solution is not exactly optimised for serving. I think a further
+investigation into generating uncertainty measures within the model is required.
+
+```
+ Name                                                          # reqs      # fails  |     Avg     Min     Max  Median  |   req/s failures/s
+--------------------------------------------------------------------------------------------------------------------------------------------
+ POST /v1/predict                                                1373    35(2.55%)  |    2096     143    6315    2000  |    9.46    0.24
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregated                                                      1373    35(2.55%)  |    2096     143    6315    2000  |    9.46    0.24
+
+Response time percentiles (approximated)
+ Type     Name                                                              50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|------------------------------------------------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ POST     /v1/predict                                                      2000   2500   2800   3000   3500   4100   4700   5200   6200   6300   6300   1373
+--------|------------------------------------------------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ None     Aggregated                                                       2000   2500   2800   3000   3500   4100   4700   5200   6200   6300   6300   1373
+
+Error report
+ # occurrences      Error
+--------------------------------------------------------------------------------------------------------------------------------------------
+ 35                 POST /v1/predict: ConnectionError(ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')))
+--------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+A production system would be deployed using an orchestration system like Kubernetes. This would handle load balancing
+and horizontal autoscaling to provide another layer of scalability.
 
 ## Future work
 

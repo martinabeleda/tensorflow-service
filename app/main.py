@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 
-from .predictor import PredictionFunctor, Predictor
+from app.predictor import PredictionFunctor, Predictor
 
 app = FastAPI()
 
