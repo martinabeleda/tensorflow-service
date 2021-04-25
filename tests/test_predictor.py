@@ -8,7 +8,7 @@ from app.predictor import PredictionFunctor, Predictor
 
 _PREDICTORS = [
     PredictionFunctor(Predictor.mnist_model),
-    PredictionFunctor(Predictor.flowers_colour),
+    PredictionFunctor(Predictor.mnist_cnn),
 ]
 
 
@@ -23,8 +23,7 @@ class TestPredictionFunctor:
     def test_predict(self, file: str, data_dir: Path, predictor: PredictionFunctor):
         prediction = predictor(data_dir / file)
         assert isinstance(prediction, np.ndarray)
-        result_shape = {Predictor.mnist_model: (1, 10), Predictor.flowers_colour: (1, 5)}[predictor.predictor]
-        assert prediction.shape == result_shape
+        assert prediction.shape == (1, 10)
 
     @pytest.mark.parametrize("predictor", _PREDICTORS)
     @pytest.mark.parametrize(
@@ -42,5 +41,5 @@ class TestPredictionFunctor:
 
     @pytest.mark.parametrize("predictor", _PREDICTORS)
     def test_model_is_grayscale(self, predictor: PredictionFunctor):
-        result = {Predictor.mnist_model: True, Predictor.flowers_colour: False}[predictor.predictor]
+        result = {Predictor.mnist_model: True, Predictor.mnist_cnn: False}[predictor.predictor]
         assert predictor._model_is_grayscale() == result

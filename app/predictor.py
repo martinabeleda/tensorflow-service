@@ -14,7 +14,7 @@ class Predictor(str, Enum):
     """The predictors that we currently support"""
 
     mnist_model = "mnist_model"
-    flowers_colour = "flowers_colour"
+    mnist_cnn = "mnist_cnn"
 
 
 @dataclasses.dataclass(frozen=True)
