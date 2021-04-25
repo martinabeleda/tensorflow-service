@@ -13,4 +13,4 @@ COPY ./pyproject.toml ./poetry.lock* /app/
 RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-root --no-dev
 
-COPY ./app /app
+COPY ./app /app/app

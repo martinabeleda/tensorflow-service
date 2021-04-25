@@ -40,7 +40,7 @@ class PredictionFunctor:
     def image_context(self) -> Tuple[int, int]:
         return self.image_shape if len(self.image_shape) == 2 else self.image_shape[:2]
 
-    def _predict_with_uncertainty(self, image: np.ndarray, samples: int = 20) -> Tuple[np.ndarray, np.ndarray]:
+    def _predict_with_uncertainty(self, image: np.ndarray, samples: int = 10) -> Tuple[np.ndarray, np.ndarray]:
         result = []
         for _ in range(samples):
             result.append(self.model.predict(image))
