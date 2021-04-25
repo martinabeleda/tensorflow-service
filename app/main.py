@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
 
 from .predictor import PredictionFunctor, Predictor
 
@@ -11,14 +12,16 @@ predictor = PredictionFunctor(Predictor.mnist_dropout)
 async def predict(file: UploadFile = File(...)):
     """Run a prediction on the input image"""
     prediction, uncertainty = predictor(file.file)
-    return {
-        "prediction": prediction.tolist(),
-        "uncertainty": uncertainty.tolist(),
-        "predictorName": predictor.predictor,
-    }
+    return JSONResponse(
+        content={
+            "prediction": prediction.tolist(),
+            "uncertainty": uncertainty.tolist(),
+            "predictorName": predictor.predictor,
+        }
+    )
 
 
 @app.get("/v1/predictor")
 async def get_predictor():
     """Get the name of the deployed predictor"""
-    return {"name": predictor.predictor}
+    return JSONResponse(content={"name": predictor.predictor})
