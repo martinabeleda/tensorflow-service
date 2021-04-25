@@ -20,7 +20,7 @@ def main():
     model.fit(train_images, train_labels, epochs=5)
     model.evaluate(test_images, test_labels)
 
-    model.save("mnist_model")
+    model.save("../app/predictors/mnist_model")
 
 
 if __name__ == "__main__":

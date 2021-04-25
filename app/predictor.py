@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 from enum import Enum
 from pathlib import Path
-from typing import IO
+from typing import IO, Tuple, Union
 
 from PIL import Image
 import numpy as np
@@ -14,6 +14,7 @@ class Predictor(str, Enum):
     """The predictors that we currently support"""
 
     mnist_model = "mnist_model"
+    mnist_cnn = "mnist_cnn"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -30,10 +31,34 @@ class PredictionFunctor:
         image = np.expand_dims(image, axis=0)
         return self.model.predict(image)
 
-    @staticmethod
-    def _load_image_as_array(file: IO) -> np.ndarray:
+    @property
+    def image_shape(self) -> Union[Tuple[int, int], Tuple[int, int, int]]:
+        return self.model.input_shape[1:]
+
+    @property
+    def image_context(self) -> Tuple[int, int]:
+        return self.image_shape if len(self.image_shape) == 2 else self.image_shape[:2]
+
+    def _load_image_as_array(self, file: IO) -> np.ndarray:
+        """Loads an image from file and applies pre-processing steps to conform to the model input
+
+        Args:
+            file (IO): A file-like object pointing to the image file
+
+        Returns:
+            np.ndarray: The image as an array that is compatible with the model
+        """
         with Image.open(file) as image:
-            return np.asarray(image)
+            if self._model_is_grayscale():
+                image = image.convert("L")
+            else:
+                image = image.convert("RGB")
+            if not image.size == self.image_context:
+                image = image.resize(self.image_context)
+        return np.asarray(image)
+
+    def _model_is_grayscale(self) -> bool:
+        return len(self.image_shape) == 2
 
     @staticmethod
     def _load_predictor(predictor: Predictor) -> tf.keras.Model:
