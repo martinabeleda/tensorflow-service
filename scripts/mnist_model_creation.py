@@ -10,9 +10,9 @@ def main():
 
     inputs = keras.Input(shape=(28, 28))
     x = keras.layers.Flatten()(inputs)
+    # Activate dropout at inference time. See: https://stackoverflow.com/a/56179071
     x = keras.layers.Dropout(0.25)(x, training=True)
     outputs = keras.layers.Dense(10, activation="softmax")(x)
-    # outputs = keras.layers.Dropout(0.25)(x, training=True)
     model = keras.Model(inputs, outputs)
 
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
