@@ -7,6 +7,7 @@ import tensorflow as tf
 from app.predictor import PredictionFunctor, Predictor
 
 _PREDICTORS = [
+    PredictionFunctor(Predictor.mnist_dropout),
     PredictionFunctor(Predictor.mnist_model),
     PredictionFunctor(Predictor.mnist_cnn),
 ]
@@ -21,9 +22,10 @@ class TestPredictionFunctor:
     @pytest.mark.parametrize("predictor", _PREDICTORS)
     @pytest.mark.parametrize("file", ["3.png", "5.png", "63.png", "65.png", "172.png"])
     def test_predict(self, file: str, data_dir: Path, predictor: PredictionFunctor):
-        prediction = predictor(data_dir / file)
+        prediction, uncertainty = predictor(data_dir / file)
         assert isinstance(prediction, np.ndarray)
-        assert prediction.shape == (1, 10)
+        assert prediction.shape == (10,)
+        assert uncertainty.shape == (10,)
 
     @pytest.mark.parametrize("predictor", _PREDICTORS)
     @pytest.mark.parametrize(
@@ -41,5 +43,5 @@ class TestPredictionFunctor:
 
     @pytest.mark.parametrize("predictor", _PREDICTORS)
     def test_model_is_grayscale(self, predictor: PredictionFunctor):
-        result = {Predictor.mnist_model: True, Predictor.mnist_cnn: False}[predictor.predictor]
-        assert predictor._model_is_grayscale() == result
+        channels = {Predictor.mnist_model: True, Predictor.mnist_dropout: True, Predictor.mnist_cnn: False}
+        assert predictor._model_is_grayscale() == channels[predictor.predictor]

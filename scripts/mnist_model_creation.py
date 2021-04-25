@@ -8,19 +8,19 @@ def main():
     # improves accuracy ~89% to ~93%
     train_images, test_images = train_images / 255.0, test_images / 255.0
 
-    model = keras.Sequential(
-        [
-            keras.layers.Flatten(input_shape=(28, 28)),
-            keras.layers.Dense(10, activation="softmax"),
-        ]
-    )
+    inputs = keras.Input(shape=(28, 28))
+    x = keras.layers.Flatten()(inputs)
+    x = keras.layers.Dropout(0.25)(x, training=True)
+    outputs = keras.layers.Dense(10, activation="softmax")(x)
+    # outputs = keras.layers.Dropout(0.25)(x, training=True)
+    model = keras.Model(inputs, outputs)
 
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
     model.fit(train_images, train_labels, epochs=5)
     model.evaluate(test_images, test_labels)
 
-    model.save("../app/predictors/mnist_model")
+    model.save("../app/predictors/mnist_dropout")
 
 
 if __name__ == "__main__":
