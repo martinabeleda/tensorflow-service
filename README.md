@@ -1,4 +1,4 @@
-# AI Automation Engineer Challenge
+# Tensorflow Service
 
 A service for serving model predictions. See the [documentation](./DOCS.md) for a discussion on any design decisions.
 
